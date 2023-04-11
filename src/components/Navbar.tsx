@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 const Navbar = () => {
   return (
     <div className="navbar w-full bg-red-900">
-      <div className="w-full max-w-7xl mx-auto text-white p-3 flex gap-9 justify-center">
+      <div className="w-full max-w-7xl mx-auto text-white p-3 flex gap-9 justify-center text-lg">
         <NavLink
           className="hover:underline underline-offset-2"
           to="/"
