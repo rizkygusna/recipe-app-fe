@@ -1,6 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
+
+interface IRecipe {
+  name: string;
+  ingredients: Array<string>;
+  instruction: string;
+  imageUrl: string;
+  cookingTime: number;
+}
 
 const CreateRecipe = () => {
+  const [recipe, setRecipe] = useState<IRecipe>({
+    name: "",
+    ingredients: [],
+    instruction: "",
+    imageUrl: "",
+    cookingTime: 0,
+  });
+
+  const handleFormChange = (event: React.ChangeEvent<any>) => {
+    const { value, name } = event.target;
+    setRecipe({ ...recipe, [name]: value });
+  };
+
   return (
     <div className="card w-full max-w-md mt-16 mx-auto shadow bg-base-100">
       <div className="card-body">
@@ -15,6 +36,7 @@ const CreateRecipe = () => {
               placeholder="Enter recipe name"
               className="input input-bordered w-full"
               name="name"
+              onChange={handleFormChange}
             />
           </div>
           <div className="form-control">
@@ -25,7 +47,20 @@ const CreateRecipe = () => {
               className="textarea textarea-bordered"
               name="instruction"
               rows={7}
+              onChange={handleFormChange}
             ></textarea>
+          </div>
+          <div className="form-control">
+            <label className="label" htmlFor="image-url">
+              <span className="label-text">Image url</span>
+            </label>
+            <input
+              className="textarea textarea-bordered"
+              type="url"
+              name="image-url"
+              id="imageUrl"
+              onChange={handleFormChange}
+            />
           </div>
           <div className="form-control">
             <label className="label" htmlFor="cooking-time">
@@ -37,6 +72,7 @@ const CreateRecipe = () => {
               name="cooking-time"
               id="cookingTime"
               min={1}
+              onChange={handleFormChange}
             />
           </div>
           <button className="btn btn-primary btn-block my-4" type="submit">
