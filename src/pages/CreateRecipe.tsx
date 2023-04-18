@@ -35,6 +35,19 @@ const CreateRecipe = () => {
     ingredientsInput.current.value = "";
   };
 
+  const handleDeleteIngredient = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    index: number
+  ) => {
+    event.preventDefault();
+    const ingredientsCopy = [...recipe.ingredients];
+    ingredientsCopy.splice(index, 1);
+    setRecipe({
+      ...recipe,
+      ingredients: ingredientsCopy,
+    });
+  };
+
   console.log(recipe);
 
   return (
@@ -76,17 +89,20 @@ const CreateRecipe = () => {
             </div>
             {recipe?.ingredients.length > 0 && (
               <ul className="flex flex-col gap-2 mt-3">
-                {recipe.ingredients.map((item) => (
-                  <>
-                    <li>
-                      {item}
-                      <span>
-                        <button className="btn btn-outline btn-xs btn-error ml-1">
-                          <FaTrash></FaTrash>
-                        </button>
-                      </span>
-                    </li>
-                  </>
+                {recipe.ingredients.map((item, index) => (
+                  <li>
+                    {item}
+                    <span>
+                      <button
+                        className="btn btn-outline btn-xs btn-error ml-1"
+                        onClick={(event) =>
+                          handleDeleteIngredient(event, index)
+                        }
+                      >
+                        <FaTrash></FaTrash>
+                      </button>
+                    </span>
+                  </li>
                 ))}
               </ul>
             )}
