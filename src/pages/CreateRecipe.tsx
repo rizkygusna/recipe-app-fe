@@ -1,10 +1,11 @@
+import axios from "axios";
 import React, { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 interface IRecipe {
   name: string;
   ingredients: Array<string>;
   instruction: string;
-  imageUrl: string;
+  imgUrl: string;
   cookingTime: number;
 }
 
@@ -13,7 +14,7 @@ const CreateRecipe = () => {
     name: "",
     ingredients: [],
     instruction: "",
-    imageUrl: "",
+    imgUrl: "",
     cookingTime: 0,
   });
 
@@ -21,7 +22,11 @@ const CreateRecipe = () => {
 
   const handleFormChange = (event: React.ChangeEvent<any>) => {
     const { value, name } = event.target;
-    setRecipe({ ...recipe, [name]: value });
+    const intValue = parseInt(value);
+    setRecipe({
+      ...recipe,
+      [name]: name !== "cookingTime" ? value : intValue,
+    });
   };
 
   const handleAddIngredients = () => {
@@ -33,6 +38,22 @@ const CreateRecipe = () => {
       ingredients: [...recipe.ingredients, addedIngredient],
     });
     ingredientsInput.current.value = "";
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const userId = window.localStorage.getItem("userId");
+    if (!userId) return;
+    try {
+      const res = await axios.post("http://localhost:3001/recipes", {
+        ...recipe,
+        createdById: userId,
+      });
+      alert("Recipe saved!");
+    } catch (error) {
+      console.log(error);
+      alert("An error occured, please check your network connection");
+    }
   };
 
   const handleDeleteIngredient = (
@@ -54,7 +75,7 @@ const CreateRecipe = () => {
     <div className="card w-full max-w-md mt-16 mx-auto shadow bg-base-100">
       <div className="card-body">
         <h2 className="card-title">Create Recipe</h2>
-        <form className="form-control w-full gap-3">
+        <form className="form-control w-full gap-3" onSubmit={handleSubmit}>
           <div className="form-control">
             <label className="label" htmlFor="name">
               <span className="label-text">Name</span>
@@ -119,25 +140,25 @@ const CreateRecipe = () => {
             ></textarea>
           </div>
           <div className="form-control">
-            <label className="label" htmlFor="image-url">
+            <label className="label" htmlFor="imgUrl">
               <span className="label-text">Image url</span>
             </label>
             <input
               className="textarea textarea-bordered"
               type="url"
-              name="image-url"
-              id="imageUrl"
+              name="imgUrl"
+              id="imgUrl"
               onChange={handleFormChange}
             />
           </div>
           <div className="form-control">
-            <label className="label" htmlFor="cooking-time">
+            <label className="label" htmlFor="cookingTime">
               <span className="label-text">Cooking time (minute)</span>
             </label>
             <input
               className="input input-bordered"
               type="number"
-              name="cooking-time"
+              name="cookingTime"
               id="cookingTime"
               min={1}
               onChange={handleFormChange}
