@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useRef, useState } from "react";
+import { FaTrash } from "react-icons/fa";
 interface IRecipe {
   name: string;
   ingredients: Array<string>;
@@ -17,10 +17,25 @@ const CreateRecipe = () => {
     cookingTime: 0,
   });
 
+  const ingredientsInput = useRef<HTMLInputElement>(null);
+
   const handleFormChange = (event: React.ChangeEvent<any>) => {
     const { value, name } = event.target;
     setRecipe({ ...recipe, [name]: value });
   };
+
+  const handleAddIngredients = () => {
+    if (!ingredientsInput.current || !ingredientsInput.current.value) return;
+    if (ingredientsInput.current.value.length <= 0) return;
+    const addedIngredient = ingredientsInput.current?.value;
+    setRecipe({
+      ...recipe,
+      ingredients: [...recipe.ingredients, addedIngredient],
+    });
+    ingredientsInput.current.value = "";
+  };
+
+  console.log(recipe);
 
   return (
     <div className="card w-full max-w-md mt-16 mx-auto shadow bg-base-100">
@@ -38,6 +53,43 @@ const CreateRecipe = () => {
               name="name"
               onChange={handleFormChange}
             />
+          </div>
+          <div className="form-control">
+            <label className="label" htmlFor="ingredients">
+              <span className="label-text">Ingredients</span>
+            </label>
+            <div className="flex">
+              <input
+                type="text"
+                placeholder="Add ingredients"
+                className="input input-bordered mr-2 w-[90%]"
+                name="ingredients"
+                ref={ingredientsInput}
+              />
+              <button
+                type="button"
+                onClick={handleAddIngredients}
+                className="btn btn-outline btn-primary"
+              >
+                Add
+              </button>
+            </div>
+            {recipe?.ingredients.length > 0 && (
+              <ul className="flex flex-col gap-2 mt-3">
+                {recipe.ingredients.map((item) => (
+                  <>
+                    <li>
+                      {item}
+                      <span>
+                        <button className="btn btn-outline btn-xs btn-error ml-1">
+                          <FaTrash></FaTrash>
+                        </button>
+                      </span>
+                    </li>
+                  </>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="form-control">
             <label className="label" htmlFor="instruction">
