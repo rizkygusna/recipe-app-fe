@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 interface IRecipe {
   name: string;
   ingredients: Array<string>;
@@ -10,6 +11,7 @@ interface IRecipe {
 }
 
 const CreateRecipe = () => {
+  const navigate = useNavigate();
   const [recipe, setRecipe] = useState<IRecipe>({
     name: "",
     ingredients: [],
@@ -50,6 +52,7 @@ const CreateRecipe = () => {
         createdById: userId,
       });
       alert("Recipe saved!");
+      navigate("/");
     } catch (error) {
       console.log(error);
       alert("An error occured, please check your network connection");
