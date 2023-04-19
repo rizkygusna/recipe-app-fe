@@ -72,8 +72,6 @@ const CreateRecipe = () => {
     });
   };
 
-  console.log(recipe);
-
   return (
     <div className="card w-full max-w-md mt-16 mx-auto shadow bg-base-100">
       <div className="card-body">
