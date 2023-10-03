@@ -5,8 +5,8 @@ import { useCookies } from "react-cookie";
 
 const Home = () => {
   const [recipeList, setRecipeList] = useState([]);
+  const [savedRecipes, setSavedRecipes] = useState<string[]>([]);
   const [cookie, setCookie] = useCookies(["token"]);
-
   const userId = window.localStorage.getItem("userId");
 
   const getRecipes = async () => {
@@ -31,8 +31,20 @@ const Home = () => {
     }
   };
 
+  const getSavedRecipes = async (userId: string) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3001/recipes/saved-recipes/ids/${userId}`
+      );
+      setSavedRecipes(res.data.savedRecipes);
+    } catch (error) {
+      alert("Could not fetch saved recipes");
+    }
+  };
+
   useEffect(() => {
     getRecipes();
+    if (cookie.token && userId) getSavedRecipes(userId);
   }, []);
 
   return (
