@@ -1,9 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
+import { useCookies } from "react-cookie";
 
 const Home = () => {
   const [recipeList, setRecipeList] = useState([]);
+  const [cookie, setCookie] = useCookies(["token"]);
+
+  const userId = window.localStorage.getItem("userId");
 
   const getRecipes = async () => {
     try {
@@ -15,6 +19,18 @@ const Home = () => {
     }
   };
 
+  const saveRecipe = async (recipeId: string, userId: string) => {
+    try {
+      const res = await axios.put("http://localhost:3001/recipes", {
+        recipeId,
+        userId,
+      });
+    } catch (error) {
+      console.log(error);
+      alert("Error saving recipe");
+    }
+  };
+
   useEffect(() => {
     getRecipes();
   }, []);
@@ -22,8 +38,17 @@ const Home = () => {
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col gap-4 items-center pt-8">
       {recipeList.length > 0 &&
-        recipeList.map(({ imgUrl, name, cookingTime }) => (
-          <RecipeCard imgUrl={imgUrl} name={name} cookingTime={cookingTime} />
+        recipeList.map(({ imgUrl, name, cookingTime, id }) => (
+          <RecipeCard
+            imgUrl={imgUrl}
+            name={name}
+            cookingTime={cookingTime}
+            onClickSave={() =>
+              cookie.token && userId
+                ? saveRecipe(id, userId)
+                : alert("Please login")
+            }
+          />
         ))}
     </div>
   );
