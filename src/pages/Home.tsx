@@ -25,6 +25,7 @@ const Home = () => {
         recipeId,
         userId,
       });
+      getSavedRecipes(userId);
     } catch (error) {
       console.log(error);
       alert("Error saving recipe");
@@ -42,6 +43,10 @@ const Home = () => {
     }
   };
 
+  const isRecipeSaved = (recipeId: string) => {
+    return savedRecipes.includes(recipeId);
+  };
+
   useEffect(() => {
     getRecipes();
     if (cookie.token && userId) getSavedRecipes(userId);
@@ -52,6 +57,7 @@ const Home = () => {
       {recipeList.length > 0 &&
         recipeList.map(({ imgUrl, name, cookingTime, id }) => (
           <RecipeCard
+            key={id}
             imgUrl={imgUrl}
             name={name}
             cookingTime={cookingTime}
@@ -60,6 +66,7 @@ const Home = () => {
                 ? saveRecipe(id, userId)
                 : alert("Please login")
             }
+            isSaved={isRecipeSaved(id)}
           />
         ))}
     </div>
