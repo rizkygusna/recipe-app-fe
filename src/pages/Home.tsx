@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import { useCookies } from "react-cookie";
+import { getRecipes, getSavedRecipes, saveRecipe } from "../services/recipe";
 
 const Home = () => {
   const [recipeList, setRecipeList] = useState([]);
@@ -9,37 +10,15 @@ const Home = () => {
   const [cookie, setCookie] = useCookies(["token"]);
   const userId = window.localStorage.getItem("userId");
 
-  const getRecipes = async () => {
-    try {
-      const res = await axios.get("http://localhost:3001/recipes");
-      setRecipeList(res.data);
-    } catch (error) {
-      console.log(error);
-      alert("Error fetching recipes");
-    }
+  const fetchRecipes = async () => {
+    const res = await getRecipes();
+    setRecipeList(res);
   };
 
-  const saveRecipe = async (recipeId: string, userId: string) => {
-    try {
-      const res = await axios.put("http://localhost:3001/recipes", {
-        recipeId,
-        userId,
-      });
-      getSavedRecipes(userId);
-    } catch (error) {
-      console.log(error);
-      alert("Error saving recipe");
-    }
-  };
-
-  const getSavedRecipes = async (userId: string) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:3001/recipes/saved-recipes/ids/${userId}`
-      );
-      setSavedRecipes(res.data.savedRecipes);
-    } catch (error) {
-      alert("Could not fetch saved recipes");
+  const fetchSavedRecipes = async () => {
+    if (cookie.token && userId) {
+      const res = await getSavedRecipes(userId);
+      setSavedRecipes(res);
     }
   };
 
@@ -48,8 +27,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    getRecipes();
-    if (cookie.token && userId) getSavedRecipes(userId);
+    fetchRecipes();
+    fetchSavedRecipes();
   }, []);
 
   return (
