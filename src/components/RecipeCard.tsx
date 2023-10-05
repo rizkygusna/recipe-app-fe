@@ -1,11 +1,9 @@
-import React from "react";
-
 interface IProps {
   imgUrl: string;
   name: string;
   cookingTime: number;
-  onClickSave: (e: any) => void;
-  isSaved: boolean;
+  onClickSave?: (e: any) => void;
+  isSaved?: boolean;
 }
 
 const RecipeCard = ({
@@ -23,13 +21,15 @@ const RecipeCard = ({
       <div className="card-body">
         <div className="flex justify-between">
           <h2 className="card-title">{name}</h2>
-          <button
-            className="btn btn-outline btn-primary btn-sm"
-            onClick={onClickSave}
-            disabled={isSaved}
-          >
-            {isSaved ? "Saved" : "Save"}
-          </button>
+          {onClickSave && isSaved && (
+            <button
+              className="btn btn-outline btn-primary btn-sm"
+              onClick={onClickSave}
+              disabled={isSaved}
+            >
+              {isSaved ? "Saved" : "Save"}
+            </button>
+          )}
         </div>
         <p>Cooking Time: {cookingTime} minutes</p>
       </div>

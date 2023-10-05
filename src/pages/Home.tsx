@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import { useCookies } from "react-cookie";
-import { getRecipes, getSavedRecipes, saveRecipe } from "../services/recipe";
+import { getRecipes, getSavedRecipesIds, saveRecipe } from "../services/recipe";
 
 const Home = () => {
   const [recipeList, setRecipeList] = useState([]);
@@ -17,7 +17,7 @@ const Home = () => {
 
   const fetchSavedRecipes = async () => {
     if (cookie.token && userId) {
-      const res = await getSavedRecipes(userId);
+      const res = await getSavedRecipesIds(userId);
       setSavedRecipes(res);
     }
   };
